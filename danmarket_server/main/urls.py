@@ -1,11 +1,16 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 # index는 대문, blog는 게시판
-from main.views import index, blog, new_post, posting, remove_post
+from main.views import hello_world, index, blog, new_post, posting, remove_post, hello_world_drf
 
 # 이미지를 업로드하자
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework import routers
+from . import views
+
+router = routers.DefaultRouter(trailing_slash=False)
+router.register('post', views.Postview)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,6 +24,15 @@ urlpatterns = [
     path('blog/new_post/', new_post),
     
     path('blog/<int:pk>/remove/', remove_post),
+    
+    #기존 rest
+    path('hello_world/', hello_world),
+    
+    #DRF rest
+    path('hello_world_drf/', hello_world_drf),
+    
+    #Post View
+    path('', include(router.urls)),
 
 ]
 

@@ -1,6 +1,12 @@
+#from django.http import HttpResponse
 from django.shortcuts import redirect, render
 # View에 Model(Post 게시글) 가져오기
 from .models import Post
+from .serializers import PostSerializer
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
 
 # index.html 페이지를 부르는 index 함수
 def index(request):
@@ -43,3 +49,20 @@ def remove_post(request, pk):
         return redirect('/blog/')
     return render(request, 'main/remove_post.html', {'Post': post})
 
+#기존 방식
+# def hello_world(response):
+#     return render('Hellow_world')
+
+#render를 사용하면 html기반으로 유저에게 넘겨줄수 있음.
+def hello_world(request):
+    return render(request, 'main/temp.html')
+
+#DRF 방식
+@api_view()
+def hello_world_drf(request):
+    return Response({"message" : "Hello world DRF"})
+
+
+class Postview(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer

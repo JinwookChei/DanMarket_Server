@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-mn8l0bq4ndnzz#z*7%&uz6_7l86$e4yx_nd7xpl3yi7k2q&cyg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#모든 서버에서 요청 받을 수 있도록 설정.
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
