@@ -1,4 +1,5 @@
 #from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 # View에 Model(Post 게시글) 가져오기
 from .models import Post
@@ -6,6 +7,7 @@ from .serializers import PostSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
 
 
 # index.html 페이지를 부르는 index 함수
@@ -25,22 +27,38 @@ def posting(request, pk):
     post = Post.objects.get(pk=pk)
     # posting.html 페이지를 열 때, 찾아낸 게시글(post)을 post라는 이름으로 가져옴
     return render(request, 'main/posting.html', {'post':post})
+# def new_post(request):
+#     if request.method == 'POST':
+#         if request.POST['mainphoto']:
+#             new_article=Post.objects.create(
+#                 postname=request.POST['postname'],
+#                 contents=request.POST['contents'],
+#                 mainphoto=request.POST['mainphoto'],
+#             )
+#         else:
+#             new_article=Post.objects.create(
+#                 postname=request.POST['postname'],
+#                 contents=request.POST['contents'],
+#                 mainphoto=request.POST['mainphoto'],
+#             )
+#         return redirect('/blog/')
+#     return render(request, 'main/new_post.html')'
+
+@csrf_exempt
 def new_post(request):
-    if request.method == 'POST':
-        if request.POST['mainphoto']:
-            new_article=Post.objects.create(
-                postname=request.POST['postname'],
-                contents=request.POST['contents'],
-                mainphoto=request.POST['mainphoto'],
-            )
+    if request.method != 'POST':
+        postname = request.POST.get('postname')
+        contents = request.POST.get('contents')
+        mainphoto = request.FILES.get('mainphoto')
+
+        if postname and contents and mainphoto:
+            post = Post(postname=postname, contents=contents, mainphoto=mainphoto)
+            post.save()
+            return JsonResponse({'message': '게시물이 성공적으로 추가되었습니다.'}, status=200)
         else:
-            new_article=Post.objects.create(
-                postname=request.POST['postname'],
-                contents=request.POST['contents'],
-                mainphoto=request.POST['mainphoto'],
-            )
-        return redirect('/blog/')
-    return render(request, 'main/new_post.html')
+            return JsonResponse({'error': '모든 필드를 입력하세요.'}, status=400)
+    
+    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)
 
 def remove_post(request, pk):
     post = Post.objects.get(pk=pk)
@@ -66,4 +84,3 @@ def hello_world_drf(request):
 class Postview(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    

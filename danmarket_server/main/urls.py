@@ -20,17 +20,8 @@ urlpatterns = [
     path('blog/', blog, name='blog'),
     # URL:80/blog/숫자로 접속하면 게시글-세부페이지(posting)
     path('blog/<int:pk>/', posting, name='posting'),
-    
-    path('blog/new_post/', new_post),
-    
+    path('new_post/', new_post, name='new_post'),
     path('blog/<int:pk>/remove/', remove_post),
-    
-    #기존 rest
-    path('hello_world/', hello_world),
-    
-    #DRF rest
-    path('hello_world_drf/', hello_world_drf),
-    
     #Post View
     path('', include(router.urls)),
 
