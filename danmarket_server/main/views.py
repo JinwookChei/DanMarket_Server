@@ -66,3 +66,4 @@ def hello_world_drf(request):
 class Postview(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    
